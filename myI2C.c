@@ -1,5 +1,6 @@
 #include "myI2C.h"
 #include "myGPIO.h"
+#include "myUART.h"
 
 void I2C_init(){
 	
@@ -26,39 +27,7 @@ void I2C_init(){
 
 }
 
-//Initialize Accelerometer
-void I2C_init_IMU(){
-		
-		I2C_writeSlv(SLV_ADDR_GYRO,CTRL1_addr,0x0F);
-		
-		//Data update at 50Hz, enable X, Y, Z
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL0_addr,CTRL0);
-		I2C_readSlv(SLV_ADDR_ACC,CTRL0_addr);
-	
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL1_addr,CTRL1);
-		I2C_readSlv(SLV_ADDR_ACC,CTRL1_addr);
-		
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL2_addr,CTRL2);
-		I2C_readSlv(SLV_ADDR_ACC,CTRL2_addr);
-	
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL3_addr,CTRL3);
-		I2C_readSlv(SLV_ADDR_ACC,CTRL3_addr);
-	
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL4_addr,CTRL4);
-		I2C_readSlv(SLV_ADDR_ACC,CTRL4_addr);
-		
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL5_addr,CTRL5);
-		I2C_readSlv(SLV_ADDR_ACC,CTRL5_addr);
-		
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL6_addr,CTRL6);
-		I2C_readSlv(SLV_ADDR_ACC,CTRL6_addr);
-		
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL7_addr,CTRL7);
-		I2C_readSlv(SLV_ADDR_ACC,CTRL7_addr);
-		
-		I2C_readSlvChunk(SLV_ADDR_ACC,CTRL0_addr,8);
-		I2C_readSlvChunk(SLV_ADDR_ACC,CTRL0_addr,8);
-}
+
 
 
 //SlvAddr + Read is 1, Write is 0
@@ -103,9 +72,9 @@ void I2C_sendRecieveWithStop(int stop){
 		}
 }
 
-void I2C_readSlvChunk(const unsigned int slvAddr, const unsigned int startReg, const unsigned int noRegs){
+void I2C_readSlvChunk(const unsigned int slvAddr, const unsigned int startReg, const unsigned int noRegs,  char array[]){
 		
-		volatile unsigned int x_data_a = 0;	
+		volatile char data_a = 0;
 		int i=0;
 	
 		//Waits for i2c
@@ -123,15 +92,17 @@ void I2C_readSlvChunk(const unsigned int slvAddr, const unsigned int startReg, c
 		for(i=0; i<noRegs-1; i++){
 				I2C_waitTillIdle();
 				if(I2C_CheckError()==0){
-					x_data_a = I2C0_MDR;
-					UART4_DATA = x_data_a;
+					data_a = I2C0_MDR;
+					array[i] = data_a;
+					//UART4_DATA = x_data_a;
 				}
 				I2C_Execute(0x9);
 		}
 		I2C_waitTillIdle();
 		if(I2C_CheckError()==0){
-				x_data_a = I2C0_MDR;
-				UART4_DATA = x_data_a;
+				data_a = I2C0_MDR;
+				array[i+1] = data_a;
+				//UART4_DATA = x_data_a;
 		}
 		I2C_Execute(I2C_EXECUTE_STOP);
 		

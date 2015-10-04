@@ -8,10 +8,12 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
+"./IMUReader.obj" \
 "./main.obj" \
 "./myGPIO.obj" \
 "./myI2C.obj" \
 "./mySysTick.obj" \
+"./myUART.obj" \
 "./tm4c123gh6pm_startup_ccs.obj" \
 "/home/dulimon/workspace/c++/embedded/proj/tivaware/driverlib/ccs/Debug/driverlib.lib" \
 "../tm4c123gh6pm.cmd" \
@@ -152,8 +154,8 @@ applicationIMU.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)$(BIN_OUTPUTS__QUOTED)
-	-$(RM) "main.pp" "myGPIO.pp" "myI2C.pp" "mySysTick.pp" "tm4c123gh6pm_startup_ccs.pp" 
-	-$(RM) "main.obj" "myGPIO.obj" "myI2C.obj" "mySysTick.obj" "tm4c123gh6pm_startup_ccs.obj" 
+	-$(RM) "IMUReader.pp" "main.pp" "myGPIO.pp" "myI2C.pp" "mySysTick.pp" "myUART.pp" "tm4c123gh6pm_startup_ccs.pp" 
+	-$(RM) "IMUReader.obj" "main.obj" "myGPIO.obj" "myI2C.obj" "mySysTick.obj" "myUART.obj" "tm4c123gh6pm_startup_ccs.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

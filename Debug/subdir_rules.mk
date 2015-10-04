@@ -3,6 +3,13 @@
 ################################################################################
 
 # Each subdirectory must supply rules for building sources it contributes
+IMUReader.obj: ../IMUReader.c $(GEN_OPTS) $(GEN_HDRS)
+	@echo 'Building file: $<'
+	@echo 'Invoking: ARM Compiler'
+	"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me --include_path="/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/include" --include_path="/home/dulimon/workspace/c++/embedded/proj/tivaware" -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PM --display_error_number --diag_warning=225 --diag_wrap=off --preproc_with_compile --preproc_dependency="IMUReader.pp" $(GEN_OPTS__FLAG) "$(shell echo $<)"
+	@echo 'Finished building: $<'
+	@echo ' '
+
 main.obj: ../main.c $(GEN_OPTS) $(GEN_HDRS)
 	@echo 'Building file: $<'
 	@echo 'Invoking: ARM Compiler'
@@ -28,6 +35,13 @@ mySysTick.obj: ../mySysTick.c $(GEN_OPTS) $(GEN_HDRS)
 	@echo 'Building file: $<'
 	@echo 'Invoking: ARM Compiler'
 	"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me --include_path="/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/include" --include_path="/home/dulimon/workspace/c++/embedded/proj/tivaware" -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PM --display_error_number --diag_warning=225 --diag_wrap=off --preproc_with_compile --preproc_dependency="mySysTick.pp" $(GEN_OPTS__FLAG) "$(shell echo $<)"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+myUART.obj: ../myUART.c $(GEN_OPTS) $(GEN_HDRS)
+	@echo 'Building file: $<'
+	@echo 'Invoking: ARM Compiler'
+	"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me --include_path="/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/include" --include_path="/home/dulimon/workspace/c++/embedded/proj/tivaware" -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PM --display_error_number --diag_warning=225 --diag_wrap=off --preproc_with_compile --preproc_dependency="myUART.pp" $(GEN_OPTS__FLAG) "$(shell echo $<)"
 	@echo 'Finished building: $<'
 	@echo ' '
 

@@ -1,6 +1,7 @@
 #include "mySysTick.h"
 #include "myI2C.h"
 #include "myGPIO.h"
+#include "IMUReader.h"
 
 extern int sCounter;
 extern int sLightOn;
@@ -16,8 +17,9 @@ void SysTick_Handler(){
 						//I2C_readSlv(SLV_ADDR_ACC,0x0F);	//Whoami 49
 						//I2C_readSlv(SLV_ADDR_GYRO,0x0F);	//whoami D7
 						
-						I2C_readSlv(SLV_ADDR_ACC,0x29);
-						I2C_readSlv(SLV_ADDR_ACC,0x28);
+						//I2C_readSlv(SLV_ADDR_ACC,0x29);
+						//I2C_readSlv(SLV_ADDR_ACC,0x28);
+						IMU_readUnit();
 					
 				}else{
 						sLightOn = 1;
