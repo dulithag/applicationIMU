@@ -2,12 +2,18 @@
 
 	<head>
 		<meta charset='utf-8'>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="libs.js"></script>
 		<script type="text/javascript" src="script.js"></script>
 	</head>	
 
 	<body style="margin:0px" onload='main()'>
-
+		<script>
+			var socket = io.connect();
+			socket.on('message', function(data){
+							    console.log(data.message);
+								});
+		</script>
 		<canvas id='mycanvas' style='position: absolute; background-color: black;'></canvas>	
 
 	</body>
