@@ -3,6 +3,7 @@ var http = require('http');
 var url  = require('url');
 var fs	 = require('fs');
 var io	= require('socket.io');
+var SerialPort = require("serialport").SerialPort;
 
 var server = http.createServer(function(request,response){
 
@@ -29,6 +30,17 @@ var server = http.createServer(function(request,response){
 server.listen(8001);
 var websocket = io.listen(server);
 websocket.on('connection', function(socket){
-	for(var i=0; i<10; i++)
-	 socket.emit('message', {'message': 'hello world'+i});
-});
+							console.log("connection made");
+	 						socket.emit('message', {'message': 'Opening Serial Port ...'});
+							var serialport = new SerialPort("/dev/ttyUSB0",{baudrate:115200});
+							serialport.on("open", function () {
+		    					serialport.on('data', function(data) {
+					    			console.log('data received: ' + data);
+	 								socket.emit('message', {'message': data});
+								});
+							});
+					}
+			);
+
+
+							
