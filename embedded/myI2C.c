@@ -89,22 +89,16 @@ void I2C_readSlvChunk(const unsigned int slvAddr, const unsigned int startReg, c
 	
 		I2C_setReadSlv(slvAddr,1);
 		I2C_Execute(0x0B);
-		for(i=0; i<noRegs-1; i++){
-				I2C_waitTillIdle();
-				if(I2C_CheckError()==0){
-					data_a = I2C0_MDR;
-					array[i] = data_a;
-					//UART4_DATA = x_data_a;
-				}
-				I2C_Execute(0x9);
-		}
-		I2C_waitTillIdle();
-		if(I2C_CheckError()==0){
+		for(i=0; i<noRegs; i++){
+			I2C_waitTillIdle();
+			if(I2C_CheckError()==0){
 				data_a = I2C0_MDR;
-				array[i+1] = data_a;
+				array[i] = data_a;
 				//UART4_DATA = x_data_a;
+			}
+			I2C_Execute((i==noRegs-1)?I2C_EXECUTE_STOP:I2C_EXECUTE);
 		}
-		I2C_Execute(I2C_EXECUTE_STOP);
+
 		
 }
 

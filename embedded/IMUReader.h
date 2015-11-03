@@ -27,7 +27,7 @@
 #define CTRL4  0x08   //accelerometer data ready on INT2.
 #define CTRL5  0x0E   //No temperature, low-res magnetic, 25Hz, latch interrupt on INT2
 #define CTRL6  0x00   //+/-2gauss sensitivity.
-#define CTRL7  0x20   //normal high-pass acceleration filter, no Temp, magnetic always on, continuous
+#define CTRL7  0x00   //no normal high-pass acceleration filter, no Temp, magnetic always on, continuous
 
 #define DATASTART_addr 0x28
 

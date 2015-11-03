@@ -15,8 +15,8 @@
 #define I2C_START_EXECUTE 		 0x3
 #define I2C_EXECUTE_STOP 			 0x5
 #define I2C_STOP					 		 0x4
-#define I2C_EXECUTE			 			 0x1
-#define I2C_NEXECUTE			 		 0x9
+#define I2C_NEXECUTE			 			 0x1
+#define I2C_EXECUTE			 		 0x9
 
 
 

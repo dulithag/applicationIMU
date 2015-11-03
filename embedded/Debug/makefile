@@ -122,32 +122,32 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-applicationIMU.out \
+embedded.out \
 
 EXE_OUTPUTS__QUOTED += \
-"applicationIMU.out" \
+"embedded.out" \
 
 BIN_OUTPUTS += \
-applicationIMU.hex \
+embedded.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"applicationIMU.hex" \
+"embedded.hex" \
 
 
 # All Target
-all: applicationIMU.out
+all: embedded.out
 
 # Tool invocations
-applicationIMU.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
+embedded.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker'
-	"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PM --display_error_number --diag_warning=225 --diag_wrap=off -z -m"applicationIMU.map" --heap_size=0 --stack_size=512 -i"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/lib" -i"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/include" --reread_libs --warn_sections --display_error_number --diag_wrap=off --xml_link_info="applicationIMU_linkInfo.xml" --rom_model -o "applicationIMU.out" $(ORDERED_OBJS)
+	"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PM --display_error_number --diag_warning=225 --diag_wrap=off -z -m"embedded.map" --heap_size=0 --stack_size=512 -i"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/lib" -i"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/include" --reread_libs --warn_sections --display_error_number --diag_wrap=off --xml_link_info="embedded_linkInfo.xml" --rom_model -o "embedded.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-applicationIMU.hex: $(EXE_OUTPUTS)
+embedded.hex: $(EXE_OUTPUTS)
 	@echo 'Invoking: ARM Hex Utility'
-	"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armhex"  -o "applicationIMU.hex" $(EXE_OUTPUTS__QUOTED)
+	"/home/dulimon/software/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.5/bin/armhex"  -o "embedded.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $@'
 	@echo ' '
 
