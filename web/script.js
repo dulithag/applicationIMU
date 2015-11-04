@@ -62,49 +62,93 @@ function createBuffers(GL){
 
   	console.log("======= Fill ARRAY_BUFFER and ELEMENT_ARRAY_BUFFER =======") ;
 
-	//POINTS :
-  	var triangle_vertex=[
-                            -1,-1,-1,
-                            0,0,0,
-                            1,-1,-1,
-                            1,0,0,
-                            1,1,-1,
-                            1,1,0,
-                            -1,1,-1,
+	var triangle_vertex=[
+                            -0.7,-0.5,-1,		//z- bot left G    0
                             0,1,0,
-                            -1,-1,1,
+							-0.7,-0.5,-1,		//z- bot left B    1
                             0,0,1,
-                            1,-1,1,
+							-0.7,-0.5,-1,		//z- bot left Y    2
+                            1,1,0,
+
+                            0.7,-0.5,-1,		//z- bot right G   3
+                            0,1,0,
+                            0.7,-0.5,-1,		//z- bot right B   4
+                            0,0,1,
+                            0.7,-0.5,-1,		//z- bot right C   5
+                            0,1,1,
+
+                            0.7,0.5,-1,			//z- top right G  6
+                            0,1,0,
+                            0.7,0.5,-1,			//z- top right R  7
+                            1,0,0,
+                            0.7,0.5,-1,			//z- top right C  8
+                            0,1,1,
+
+                            -0.7,0.5,-1,		//z- top left G   9
+                            0,1,0,
+                            -0.7,0.5,-1,		//z- top left R  10
+                            1,0,0,
+                            -0.7,0.5,-1,		//z- top left Y  11
+                            1,1,0,
+                           
+                          //4 
+                            -0.7,-0.5,1,		//z+ bot left P    12
                             1,0,1,
-                            1,1,1,
-                            1,1,1,
-                            -1,1,1,
-                            0,1,1	
-  						]; 
+							-0.7,-0.5,1,		//z+ bot left B    13
+                            0,0,1,
+							-0.7,-0.5,1,		//z+ bot left Y    14
+                            1,1,0,
+                           
+                          //5 
+                            0.7,-0.5,1,			//z+ bot right P   15
+                            1,0,1,
+                            0.7,-0.5,1,			//z+ bot right B   16
+                            0,0,1,
+                            0.7,-0.5,1,			//z+ bot right C   17
+                            0,1,1,
+                           
+                          //6 
+                            0.7,0.5,1,			//z+ top right p  18
+                            1,0,1,
+                            0.7,0.5,1,			//z+ top right R  19
+                            1,0,0,
+                            0.7,0.5,1,			//z+ top right C  20
+                            0,1,1,
+                           
+                          //7 
+                            -0.7,0.5,1,		//z+ top left G   21
+                            1,0,1,
+                            -0.7,0.5,1,		//z+ top left R  22
+                            1,0,0,
+                            -0.7,0.5,1,		//z+ top left Y  23
+                            1,1,0
+  		];
+
     var TRIANGLE_VERTEX	= GL.createBuffer ();
     GL.bindBuffer(GL.ARRAY_BUFFER, TRIANGLE_VERTEX);
     GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(triangle_vertex), GL.STATIC_DRAW);
 
 	//FACES :
-    var triangle_faces = [
-                            0,1,2,
-                            0,2,3,
+ var triangle_faces = [
+                            0,3,6,
+                            0,6,9,
 
-                            4,5,6,
-                            4,6,7,
+                            12,15,18,
+                            12,18,21,
 
-                            0,3,7,
-                            0,4,7,
+                            2,11,23,
+                            2,14,23,
 
-                            1,2,6,
-                            1,5,6,
+                            5,8,20,
+                            5,17,20,
 
-                            2,3,6,
-                            3,7,6,
+                            7,10,19,
+                            10,22,19,
 
-                            0,1,5,
-                            0,4,5
-    					];
+                            1,4,16,
+                            1,13,16
+    		];
+  
   	var TRIANGLE_FACES = GL.createBuffer();
   	GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
   	GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(triangle_faces), GL.STATIC_DRAW);
