@@ -51,8 +51,9 @@ void UART_write_byte(const char data){
 
 void UART_write(const char data[],int size){
 	int i = 0;
+	volatile int delay = 0;
 	for(i=0; i<size; i++){
-
+		while(delay<10000){delay++;}
 		UART_write_byte(data[i]);
 
 	}

@@ -9,9 +9,20 @@
 
 	<body style="margin:0px" onload='main()'>
 		<script>
+
+			function updateAngles(x,y,z){
+
+
+ 				//MOVEMATRIX=LIBS.get_I4();
+			    //LIBS.rotateX(MOVEMATRIX, 60*Math.PI/180);
+			}
+
 			var socket = io.connect();
 			socket.on('message', function(data){
-							    console.log(data.message);
+							    	console.log("X="+data.x);
+							    	console.log("Y="+data.y);
+							    	console.log("Z="+data.z);
+									updateAngles();
 								});
 		</script>
 		<canvas id='mycanvas' style='position: absolute; background-color: black;'></canvas>	

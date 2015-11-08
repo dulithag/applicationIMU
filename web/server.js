@@ -27,18 +27,47 @@ var server = http.createServer(function(request,response){
 
 			});
 
+var rawBuffer = new Buffer(6);
+var rawPt = 0;
+
+function process(buff, socket){
+
+	for(var i=0; i<buff.length;i++){
+		if(buff.readUInt8(i) == 0x5c){
+			//console.log("Found 5C");
+			rawPt++;
+			continue;
+		}
+		if(buff[i]== 0x6e){
+			//console.log("Found 6E");
+			rawPt=0;
+			//console.log("raw buffer :"+rawBuffer.toString('hex'));
+			var x_data = rawBuffer.readInt16BE(0);
+			var y_data = rawBuffer.readInt16BE(2);
+			var z_data = rawBuffer.readInt16BE(4);
+			console.log("X=" + x_data + ", Y=" + y_data + ", Z=" + z_data);
+	 		socket.emit('message', {'x':x_data,'y':y_data,'z':z_data});
+			continue;
+		}
+		rawBuffer[rawPt++] = buff[i];
+	}	
+}
+
+
 server.listen(8001);
 var websocket = io.listen(server);
 websocket.on('connection', function(socket){
-							console.log("connection made");
-	 						socket.emit('message', {'message': 'Opening Serial Port ...'});
-							var serialport = new SerialPort("/dev/ttyUSB0",{baudrate:115200});
-							serialport.on("open", function () {
-		    					serialport.on('data', function(data) {
-					    			console.log('data received: ' + data);
-	 								socket.emit('message', {'message': data});
+								console.log("connection made");
+	 							socket.emit('message', 'Opening Serial Port ...');
+								var serialport = new SerialPort("/dev/ttyUSB0",{baudrate:115200});
+
+								serialport.on("open", function () {
+		    						serialport.on('data', function(data) {
+										var buff = new Buffer(data,'hex');
+					    				//console.log('data received: ' + buff.toString('hex'));
+										process(data,socket);
+									});
 								});
-							});
 					}
 			);
 

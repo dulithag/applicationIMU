@@ -12,6 +12,10 @@
 #include <string.h>
 #include <stdio.h>
 
+#define SENSIVITY 16675 //this is (faceup - facedown)/2 - not converted to v/g
+
+void IMU_dataProcess(struct unit_t datapoint, unsigned char data[]);
+
 //Initialize Accelerometer
 void IMU_init(){
 
@@ -75,12 +79,43 @@ void IMU_readUnit(){
 
 	//UART_writeln(data,6);
 
-	IMU_printUART(datapoint);
+	//IMU_printUART(datapoint);
 
+	unsigned char processed_array[6];
+	IMU_dataProcess(datapoint,processed_array);
+	UART_write((const char*)processed_array,6);
+	UART_write_byte(0x5C);
+	UART_write_byte(0x6E);
 }
 
+void IMU_dataProcess(struct unit_t datapoint, unsigned char data[]){
+
+	int16_t datapointx = datapoint.x;
+	long tempx = datapointx * 1000;
+	tempx = tempx / SENSIVITY;
+	uint16_t calx = tempx;
+
+	int16_t datapointy = datapoint.y;
+	long tempy = datapointy * 1000;
+	tempy = tempy / SENSIVITY;
+	uint16_t caly = tempy;
+
+	int16_t datapointz = datapoint.z;
+	long tempz = datapointz * 1000;
+	tempz = tempz / SENSIVITY;
+	uint16_t calz = tempz;
 
 
+	data[0] = (calx >> 8);
+	data[1] = (calx & 0x0000FFFF);
+
+	data[2] = (caly >> 8);
+	data[3] = (caly & 0x0000FFFF);
+
+	data[4] = (calz >> 8);
+	data[5] = (calz & 0x0000FFFF);
+
+}
 
 
 bool flipbits(int16_t* value){
@@ -103,7 +138,6 @@ void myitoa(int16_t value, char buffer[5]){
 		buffer[i] = "0123456789"[digit];
 	}
 }
-
 
 void IMU_printUART(struct unit_t datapoint){
 	char bufferx[5];
