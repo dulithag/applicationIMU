@@ -45,7 +45,7 @@ function process(buff, socket){
 			var x_data = rawBuffer.readInt16BE(0);
 			var y_data = rawBuffer.readInt16BE(2);
 			var z_data = rawBuffer.readInt16BE(4);
-			console.log("X=" + x_data + ", Y=" + y_data + ", Z=" + z_data);
+			//console.log("X=" + x_data + ", Y=" + y_data + ", Z=" + z_data);
 	 		socket.emit('message', {'x':x_data,'y':y_data,'z':z_data});
 			continue;
 		}

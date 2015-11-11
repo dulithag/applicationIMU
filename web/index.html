@@ -7,22 +7,66 @@
 		<script type="text/javascript" src="script.js"></script>
 	</head>	
 
+
+
 	<body style="margin:0px" onload='main()'>
 		<script>
 
 			function updateAngles(x,y,z){
+				var Rxz = Math.sqrt((x*x) + (z*z));
+				var Ryz = Math.sqrt((y*y) + (z*z));
+				var Z = Math.abs(z);
+				var theta = Math.acos(Z/Rxz);
+				var alpha = Math.acos(Z/Ryz);
+				var pi2 = Math.PI/2;
+				
+				if(x>=0){
+					if(z>=0){				//q1
+						theta = theta;
+					}else{ 					//q2
+						theta = Math.PI-theta;
+					}
+				}else{
+					if(z>=0){
+						theta = -1*(theta);
+					}else{
+						theta = -1*(Math.PI-theta);
+					}
+
+				}
+				var degTheta = (180/Math.PI) * theta;
+			
+				if(y>=0){
+					if(z>=0){				//q1
+						alpha = alpha;
+					}else{ 					//q2
+						alpha = Math.PI-alpha;
+					}
+				}else{
+					if(z>=0){
+						alpha = -1*(alpha);
+					}else{
+						alpha = -1*(Math.PI-alpha);
+					}
+
+				}
+				var degAlpha = (180/Math.PI) * alpha;
+			
+				//console.log("X="+ x + " Y=" + y + " Z=" + z + " theta=" + degTheta);
+				console.log("X="+ x + " Y=" + y + " Z=" + z + " theta=" + degAlpha);
+				//console.log(degTheta);
+ 				MOVEMATRIX=LIBS.get_I4();
+			    LIBS.rotateZ(MOVEMATRIX, (Math.PI/180)*degAlpha);
+			    LIBS.rotateX(MOVEMATRIX, (Math.PI/180)*degTheta);
 
 
- 				//MOVEMATRIX=LIBS.get_I4();
-			    //LIBS.rotateX(MOVEMATRIX, 60*Math.PI/180);
+
 			}
 
 			var socket = io.connect();
 			socket.on('message', function(data){
-							    	console.log("X="+data.x);
-							    	console.log("Y="+data.y);
-							    	console.log("Z="+data.z);
-									updateAngles();
+							    	//console.log("X="+data.x + " Y=" + data.y + " Z=" + data.z);
+									updateAngles(data.x,data.y,data.z);
 								});
 		</script>
 		<canvas id='mycanvas' style='position: absolute; background-color: black;'></canvas>	

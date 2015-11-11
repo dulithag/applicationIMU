@@ -80,7 +80,7 @@ void GPIOPortF_Handler(){
 			//I2C_Write_slv(SLV_ADDR_GYRO,CTRL1,0xF);
 			IMU_init();
 			
-			ST_RELOAD |= 0x00FFFFFF;
+			ST_RELOAD |= 0x000000FF;
 			//GetData(0x0F);			
 			PORTF_DATA &= ~0x00000004;
 		}else{

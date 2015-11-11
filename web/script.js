@@ -158,6 +158,7 @@ function createBuffers(GL){
 } 
 
 
+ var MOVEMATRIX=LIBS.get_I4();
 
 function main() {
   	console.log("Start Main Application") ;
@@ -180,7 +181,7 @@ function main() {
 
 
   	var PROJMATRIX=LIBS.get_projection(40, CANVAS.width/CANVAS.height, 1, 100);
-  	var MOVEMATRIX=LIBS.get_I4();
+  	//var MOVEMATRIX=LIBS.get_I4();
   	var VIEWMATRIX=LIBS.get_I4();
 
 	function handleKeyDown(event){
@@ -200,7 +201,7 @@ function main() {
         };
     }
 
- 	LIBS.translateZ(VIEWMATRIX, -15);
+ 	LIBS.translateZ(VIEWMATRIX, -10);
 
 	//Draw	
 	GL.clearColor(0.0, 0.0, 0.0, 0.0);
