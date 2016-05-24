@@ -11,112 +11,13 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #define SENSIVITY 16675 //this is (faceup - facedown)/2 - not converted to v/g
 
-void IMU_dataProcess(struct unit_t datapoint, unsigned char data[]);
-
-//Initialize Accelerometer
-void IMU_init(){
-
-		I2C_writeSlv(SLV_ADDR_GYRO,CTRL1_addr,0x0F);
-
-		//Data update at 50Hz, enable X, Y, Z
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL0_addr,CTRL0);
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL1_addr,CTRL1);
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL2_addr,CTRL2);
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL3_addr,CTRL3);
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL4_addr,CTRL4);
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL5_addr,CTRL5);
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL6_addr,CTRL6);
-		I2C_writeSlv(SLV_ADDR_ACC,CTRL7_addr,CTRL7);
-
-		char *data = (char*)malloc(8);
-		I2C_readSlvChunk(SLV_ADDR_ACC,CTRL0_addr,8,data);
-		//UART_write(data,8);
-
-}
-
-void IMU_readUnit(){
-	struct unit_t datapoint;
-	int16_t temp;
-	int16_t temp2;
-	int i = 0;
-	int j = 0;
-	char data[6];// = (char*)malloc(6);
-	I2C_readSlvChunk(SLV_ADDR_ACC,DATASTART_addr,6,data);
-
-	/*
-	//TEST CODE
-	data[0] = 0xAA;
-	data[1] = 0x80;
-	data[2] = 0xAA;
-	data[3] = 0x80;
-	data[4] = 0xAA;
-	data[5] = 0x80;
-	//UART_write(data,6);
-	*/
-
-	for(i=0; i<6; i++){
-		//temp = 0;
-		if(i%2==0){
-			temp = data[i];
-		}
-		else{
-			temp |= 0xFF00;
-			temp2 = (data[i]<<8) | 0x00FF;
-			temp &= temp2;
-			if(j==0) 					//x
-				datapoint.x = temp;
-			else if(j==1) 				//y
-				datapoint.y = temp;
-			else						//z
-				datapoint.z = temp;
-			j++;
-			temp = 0;
-		}
-	}
-
-	//UART_writeln(data,6);
-
-	//IMU_printUART(datapoint);
-
-	unsigned char processed_array[6];
-	IMU_dataProcess(datapoint,processed_array);
-	UART_write((const char*)processed_array,6);
-	UART_write_byte(0x5C);
-	UART_write_byte(0x6E);
-}
-
-void IMU_dataProcess(struct unit_t datapoint, unsigned char data[]){
-
-	int16_t datapointx = datapoint.x;
-	long tempx = datapointx * 1000;
-	tempx = tempx / SENSIVITY;
-	uint16_t calx = tempx;
-
-	int16_t datapointy = datapoint.y;
-	long tempy = datapointy * 1000;
-	tempy = tempy / SENSIVITY;
-	uint16_t caly = tempy;
-
-	int16_t datapointz = datapoint.z;
-	long tempz = datapointz * 1000;
-	tempz = tempz / SENSIVITY;
-	uint16_t calz = tempz;
-
-
-	data[0] = (calx >> 8);
-	data[1] = (calx & 0x0000FFFF);
-
-	data[2] = (caly >> 8);
-	data[3] = (caly & 0x0000FFFF);
-
-	data[4] = (calz >> 8);
-	data[5] = (calz & 0x0000FFFF);
-
-}
-
+/*----------------------------------------
+ * 			Utility Functions
+ *---------------------------------------*/
 
 bool flipbits(int16_t* value){
 	int msb = ((*value & 0x8000) >> 15);
@@ -128,7 +29,6 @@ bool flipbits(int16_t* value){
 	return (bool)msb;
 }
 
-
 void myitoa(int16_t value, char buffer[5]){
 	int digit = 0;
 	int i = 0;
@@ -139,14 +39,13 @@ void myitoa(int16_t value, char buffer[5]){
 	}
 }
 
-void IMU_printUART(struct unit_t datapoint){
+void printUART_decimal(struct unit_t datapoint){
 	char bufferx[5];
 	char buffery[5];
 	char bufferz[5];
 	volatile bool negative = false;
 	int16_t tdata = 0;
 	volatile int delay = 0;
-
 
 	//x
 	tdata = datapoint.x;
@@ -175,26 +74,189 @@ void IMU_printUART(struct unit_t datapoint){
 		UART_write_byte('-');
 	UART_write_minimal(bufferz,5);
 	UART_write_byte('\n');
-
-
-	/*
-	int i=4;
-	for(; testdata && i ; --i, testdata /= 10)
-			bufferx[i] = "0123456789abcdef"[testdata % 10];
-	for(;i>=0;i--)
-			bufferx[i] = '0';
-	*/
-
-	//bufferx = myitoa(testdata);
-
-	//myitoa(testdata,bufferx);
-
-	//myitoa(datapoint.y,buffery);
-	//myitoa(datapoint.z,bufferz);
-	//sprintf(bufferx,"%d",12);
-	//sprintf(buffery,"%d",datapoint.y);
-	//sprintf(bufferz,"%d",datapoint.z);
-
-	//UART_writeln(buffery,20);
-	//UART_writeln(bufferz,20);
 }
+
+void printUART_hex(struct unit_t datapoint){
+
+	unsigned char data[6];
+
+	data[0] = (datapoint.x >> 8);
+	data[1] = (datapoint.x & 0x0000FFFF);
+
+	data[2] = (datapoint.y >> 8);
+	data[3] = (datapoint.y & 0x0000FFFF);
+
+	data[4] = (datapoint.z >> 8);
+	data[5] = (datapoint.z & 0x0000FFFF);
+
+	UART_write((const char*)data,6);
+	UART_write_byte(0x5C);
+	UART_write_byte(0x6E);
+}
+
+void readUnit(uint8_t slvAddr,uint8_t startAddr, struct unit_t* datapoint ){
+	char data[6];
+	I2C_readSlvChunk(slvAddr,startAddr,6,data);
+
+/*
+	//TEST CODE
+	data[0] = 0xA1;
+	data[1] = 0x70;
+	data[2] = 0xA2;
+	data[3] = 0x80;
+	data[4] = 0xA3;
+	data[5] = 0x90;
+	//UART_write(data,6);
+*/
+
+	int i = 0;
+	for(i=0; i<6; i+=2){
+		int16_t low = data[i];
+		int16_t high = data[i+1];
+		int16_t concat = (high<<8) + low;
+		if(i==0)
+			datapoint->x = concat;
+		else if(i==2)
+			datapoint->y = concat;
+		else
+			datapoint->z = concat;
+	}
+}
+
+/*---------------------------------------
+ * 				Accelerometer
+ *---------------------------------------*/
+
+
+void accelerometer_init(){
+
+	I2C_writeSlv(SLV_ADDR_GYRO,CTRL1_addr,0x0F);
+
+	//Data update at 50Hz, enable X, Y, Z
+	I2C_writeSlv(SLV_ADDR_ACC,CTRL0_addr,ACC_CTRL0);
+	I2C_writeSlv(SLV_ADDR_ACC,CTRL1_addr,ACC_CTRL1);
+	I2C_writeSlv(SLV_ADDR_ACC,CTRL2_addr,ACC_CTRL2);
+	I2C_writeSlv(SLV_ADDR_ACC,CTRL3_addr,ACC_CTRL3);
+	I2C_writeSlv(SLV_ADDR_ACC,CTRL4_addr,ACC_CTRL4);
+	I2C_writeSlv(SLV_ADDR_ACC,CTRL5_addr,ACC_CTRL5);
+	I2C_writeSlv(SLV_ADDR_ACC,CTRL6_addr,ACC_CTRL6);
+	I2C_writeSlv(SLV_ADDR_ACC,CTRL7_addr,ACC_CTRL7);
+
+	char *data = (char*)malloc(8);
+	I2C_readSlvChunk(SLV_ADDR_ACC,CTRL0_addr,8,data);
+	//UART_write(data,8);
+}
+
+void accelerometer_dataProcess(struct unit_t* datapoint){
+
+	int16_t datapointx = datapoint->x;
+	long tempx = datapointx * 1000;
+	tempx = tempx / SENSIVITY;
+	datapoint->x = tempx;
+
+	int16_t datapointy = datapoint->y;
+	long tempy = datapointy * 1000;
+	tempy = tempy / SENSIVITY;
+	datapoint->y = tempy;
+
+	int16_t datapointz = datapoint->z;
+	long tempz = datapointz * 1000;
+	tempz = tempz / SENSIVITY;
+	datapoint->z = tempz;
+
+}
+
+
+
+void accelerometer_exe(){
+
+	struct unit_t datapoint;
+	readUnit(SLV_ADDR_ACC,ACCDATASTART_addr,&datapoint);
+	accelerometer_dataProcess(&datapoint);
+	//printUART_decimal(datapoint);
+	printUART_hex(datapoint);
+}
+
+
+
+
+
+/*----------------------------------------
+ * 				Gyroscope
+ *----------------------------------------*/
+
+void magnetic_exe(){
+
+	struct unit_t datapoint;
+	readUnit(SLV_ADDR_ACC,MAGDATASTART_addr,&datapoint);
+	//accelerometer_dataProcess(&datapoint);
+
+	double x = datapoint.x;
+	double y = datapoint.y;
+
+	double radAngle = atan2(y , x);
+	double deg = radAngle * (180 / 3.14159265358979323846);
+	int16_t degA = (int16_t)deg;
+
+	char buffer[5];
+	bool negative = flipbits(&degA);
+	if(negative)
+		UART_write_byte('-');
+	myitoa(degA, buffer);
+
+	UART_write_minimal(buffer,5);
+	UART_write_byte(' ');
+
+	//X
+	char bufferX[5];
+	negative = flipbits(&datapoint.x);
+	myitoa(datapoint.x,bufferX);
+	if(negative)
+		UART_write_byte('-');
+	UART_write_minimal(bufferX,5);
+	UART_write_byte(' ');
+
+
+	//Y
+	char bufferY[5];
+	negative = flipbits(&datapoint.y);
+	myitoa(datapoint.y,bufferY);
+	unsigned int delay = 0;
+		while(delay<10000){delay++;}
+	if(negative)
+		UART_write_byte('-');
+	UART_write_minimal(bufferY,5);
+
+
+
+
+	UART_write_byte('\n');
+
+	//printUART_decimal(datapoint);
+	//printUART_hex(datapoint);
+}
+
+
+/*----------------------------------------
+ * 				Public
+ *---------------------------------------*/
+
+void IMU_init(){
+	accelerometer_init();
+}
+
+void IMU_readUnit(){
+	accelerometer_exe();
+	//magnetic_exe();
+}
+
+
+
+
+
+
+
+
+
+
+

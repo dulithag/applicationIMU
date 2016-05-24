@@ -19,7 +19,73 @@
 				var theta = Math.acos(Z/Rxz);
 				var alpha = Math.acos(Z/Ryz);
 				var pi2 = Math.PI/2;
+		
+
+				if(z >= 0){
 				
+					if(x>=0){
+						if(y>=0){
+						 //c
+							theta = -theta;
+							alpha = alpha;
+
+						}
+						else{
+							theta = -theta;
+							alpha = -alpha;
+						 //d	
+						}
+
+					}else{
+						if(y>=0){
+							theta = theta;
+							alpha = alpha;
+						 //b	
+						}else{
+							theta = theta;
+							alpha = -alpha;
+						 //a	
+						
+						}
+					}
+				
+				}
+				
+				else{
+					
+					if(x>=0){
+						if(y>=0){
+							theta = theta - (Math.PI);
+							alpha = -alpha;
+						 //b	
+						}else{
+							theta = theta - (Math.PI);
+							alpha = alpha;
+						 //a	
+						
+						}
+						
+					}else{
+					
+						if(y>=0){
+						 //c
+							theta = -theta + (Math.PI);
+							alpha = -alpha;
+
+						}
+						else{
+							theta = -theta + (Math.PI);
+							//theta = -theta;
+							alpha = alpha;
+						 //d	
+						}
+						
+					
+					}
+				}
+				
+
+			/*
 				if(x>=0){
 					if(z>=0){				//q1
 						theta = theta;
@@ -34,8 +100,9 @@
 					}
 
 				}
+				*/
 				var degTheta = (180/Math.PI) * theta;
-			
+		/*	
 				if(y>=0){
 					if(z>=0){				//q1
 						alpha = alpha;
@@ -50,14 +117,16 @@
 					}
 
 				}
+				*/
 				var degAlpha = (180/Math.PI) * alpha;
+				
 			
 				//console.log("X="+ x + " Y=" + y + " Z=" + z + " theta=" + degTheta);
 				console.log("X="+ x + " Y=" + y + " Z=" + z + " theta=" + degAlpha);
 				//console.log(degTheta);
  				MOVEMATRIX=LIBS.get_I4();
-			    LIBS.rotateZ(MOVEMATRIX, (Math.PI/180)*degAlpha);
-			    LIBS.rotateX(MOVEMATRIX, (Math.PI/180)*degTheta);
+			    LIBS.rotateX(MOVEMATRIX, (Math.PI/180)*(degTheta));
+			    //LIBS.rotateZ(MOVEMATRIX, (Math.PI/180)*degAlpha);
 
 
 

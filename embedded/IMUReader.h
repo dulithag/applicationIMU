@@ -20,16 +20,20 @@
 #define CTRL6_addr	0x25
 #define CTRL7_addr	0x26
 
-#define CTRL0  0x000   //for normal mode, filters by-passed
-#define CTRL1  0x4F   //update after read, and all axes of acceleration enabled at 25Hz
-#define CTRL2  0xC1   //50Hz anti-alias, +/- 2g, no self-test, (SPI 3-wire)
-#define CTRL3  0x00   //No INT1 actions
-#define CTRL4  0x08   //accelerometer data ready on INT2.
-#define CTRL5  0x0E   //No temperature, low-res magnetic, 25Hz, latch interrupt on INT2
-#define CTRL6  0x00   //+/-2gauss sensitivity.
-#define CTRL7  0x00   //no normal high-pass acceleration filter, no Temp, magnetic always on, continuous
+#define ACC_CTRL0  0x000   //for normal mode, filters by-passed
+#define ACC_CTRL1  0x4F   //update after read, and all axes of acceleration enabled at 25Hz
+#define ACC_CTRL2  0xC1   //50Hz anti-alias, +/- 2g, no self-test, (SPI 3-wire)
+#define ACC_CTRL3  0x00   //No INT1 actions
+#define ACC_CTRL4  0x08   //accelerometer data ready on INT2.
+#define ACC_CTRL5  0x0E   //No temperature, low-res magnetic, 25Hz, latch interrupt on INT2
+#define ACC_CTRL6  0x00   //+/-2gauss sensitivity.
+#define ACC_CTRL7  0x00   //no normal high-pass acceleration filter, no Temp, magnetic always on, continuous
 
-#define DATASTART_addr 0x28
+
+
+#define ACCDATASTART_addr 0x28
+#define MAGDATASTART_addr 0x08
+#define MAGDATAOFFSETSTART_addr 0x16
 
 struct unit_t{
 	int16_t x;
